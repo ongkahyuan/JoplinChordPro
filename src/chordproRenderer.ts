@@ -1,12 +1,13 @@
 import {
 	ChordProParser,
 	HtmlDivFormatter,
+	Key,
 } from 'chordsheetjs';
 
 const STANDARD_META_KEYS = new Set([
 	'title', 'subtitle', 'artist', 'composer', 'lyricist',
 	'copyright', 'album', 'year', 'key', 'time', 'tempo',
-	'duration', 'capo', '_key',
+	'duration', 'capo', 'transpose', '_key',
 ]);
 
 function toString(value: string | string[] | null | undefined): string | null {
@@ -17,6 +18,17 @@ function toString(value: string | string[] | null | undefined): string | null {
 
 function capitalizeFirst(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function findFirstTransposeDirective(song: any): string | null {
+	for (const line of song.lines) {
+		for (const item of line.items) {
+			if (item && item._name === 'transpose' && item._value) {
+				return item._value;
+			}
+		}
+	}
+	return null;
 }
 
 function buildCreditsHtml(song: any): string {
@@ -50,11 +62,10 @@ function buildCreditsHtml(song: any): string {
 	return `<div class="chordpro-credits">${parts.join(' · ')}</div>`;
 }
 
-function buildMetaLineHtml(originalSong: any, songToRender: any, capoValue: number | null): string {
+function buildMetaLineHtml(displayedKey: string | null, songToRender: any, capoValue: number | null): string {
 	const parts: string[] = [];
 
-	const key = toString(originalSong.key);
-	if (key) parts.push(`Key: ${key}`);
+	if (displayedKey) parts.push(`Key: ${displayedKey}`);
 
 	const time = toString(songToRender.time);
 	if (time) parts.push(`Time: ${time}`);
@@ -145,8 +156,30 @@ export default function(context: { contentScriptId: string; pluginId: string; po
 					const songToRender = capoValue !== null ? song.transpose(capoValue) : song;
 					renderedHtml = formatter.format(songToRender);
 
+					const originalKey = toString(song.key);
+					let displayedKey: string | null = originalKey;
+					if (originalKey) {
+						const rawTranspose = findFirstTransposeDirective(song);
+						if (rawTranspose !== null) {
+							const trimmed = rawTranspose.trim();
+							let transposeDelta = 0;
+							if (/^-?\d+$/.test(trimmed)) {
+								transposeDelta = parseInt(trimmed, 10);
+							} else {
+								try {
+									transposeDelta = Key.distance(originalKey, trimmed);
+								} catch { transposeDelta = 0; }
+							}
+							if (transposeDelta !== 0) {
+								try {
+									displayedKey = Key.wrapOrFail(originalKey).transpose(transposeDelta).normalize().toString();
+								} catch { displayedKey = originalKey; }
+							}
+						}
+					}
+
 					const creditsHtml = buildCreditsHtml(songToRender);
-					const metaLineHtml = buildMetaLineHtml(song, songToRender, capoValue);
+					const metaLineHtml = buildMetaLineHtml(displayedKey, songToRender, capoValue);
 					renderedHtml = injectMetadata(renderedHtml, creditsHtml, metaLineHtml);
 				} catch (e) {
 					renderedHtml = `<div class="chordpro-error">Failed to parse ChordPro: ${(e as Error).message}</div>`;
