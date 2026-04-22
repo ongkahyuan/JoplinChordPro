@@ -56,10 +56,13 @@
 	font-family: 'Courier New', Courier, monospace;
 	font-weight: 600;
 	color: var(--joplin-accent-color, #4da6ff);
-	padding-right: 10px;
 	min-width: 0.5em;
 	line-height: 1.2;
 	white-space: nowrap;
+}
+
+.chordpro-rendered .chord-sheet .chord:not(:empty) {
+	padding-right: 10px;
 }
 
 .chordpro-rendered .chord-sheet .chord::after,

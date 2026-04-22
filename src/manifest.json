@@ -8,9 +8,15 @@
 	"author": "Joel Ong",
 	"homepage_url": "https://github.com/ongkahyuan/JoplinChordPro",
 	"repository_url": "https://github.com/ongkahyuan/JoplinChordPro",
-	"keywords": [],
+	"keywords": [
+		"ChordPro"
+	],
 	"categories": [],
 	"screenshots": [],
 	"icons": {},
-	"promo_tile": {}
+	"promo_tile": {},
+	"platforms": [
+		"desktop",
+		"mobile"
+	]
 }
