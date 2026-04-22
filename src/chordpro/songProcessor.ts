@@ -76,7 +76,7 @@ export function processSong(
 	const transposeDirective = findTransposeDirective(song);
 	const displayedKey = computeDisplayedKey(toString(song.key), transposeDirective);
 
-	const songToRender = capoValue !== null ? song.transpose(capoValue) : song;
+	const songToRender = capoValue !== null ? song.transpose(-capoValue) : song;
 	const renderedHtml = formatter.format(songToRender);
 
 	const creditsHtml = buildCreditsHtml(songToRender);
