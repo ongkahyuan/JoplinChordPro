@@ -1,15 +1,16 @@
 # ChordPro Renderer for Joplin
 
-A Joplin plugin that renders ChordPro song markup directly in your notes with beautiful chord diagrams, lyrics formatting, and automatic transposition capabilities.
+A Joplin plugin that renders ChordPro song markup directly in your notes with chord diagrams, lyrics formatting, and automatic transposition capabilities.
 
 ## Features
 
 - **ChordPro Rendering**: Automatically renders ChordPro markup in code blocks tagged with ````chordpro````
-- **Beautiful Chord Diagrams**: Displays chord names above lyrics with proper formatting
+- **Chord Diagrams**: Displays chord names above lyrics with proper formatting
 - **Transposition Support**: Automatically detects and applies transpose directives (`{transpose: +2}`)
 - **Dark Theme Support**: Automatically adapts to Joplin's dark/light themes
+- **Mobile Support**: Works on the mobile version of Joplin
 - **Song Metadata**: Extracts and displays title, artist, capo information, and credits
-- **Error Handling**: Graceful fallback with clear error messages for invalid ChordPro syntax
+
 
 ## Usage
 
