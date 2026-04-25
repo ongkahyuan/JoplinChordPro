@@ -67,6 +67,24 @@ function computeDisplayedKey(
 	return displayedKey;
 }
 
+function removeTransposeTags(song: Song): void {
+	for (const line of song.lines) {
+		line.items = line.items.filter(
+			(item) => !(item instanceof Tag && (item as any).name === 'transpose'),
+		);
+		(line as any).transposeKey = null;
+	}
+}
+
+function parseTransposeDelta(transposeDirective: string | null): number {
+	if (transposeDirective === null) return 0;
+	const trimmed = transposeDirective.trim();
+	if (/^-?\d+$/.test(trimmed)) {
+		return parseInt(trimmed, 10);
+	}
+	return 0;
+}
+
 export function processSong(
 	rawContent: string,
 ): { renderedHtml: string; creditsHtml: string; metaLineHtml: string } {
@@ -75,8 +93,12 @@ export function processSong(
 
 	const transposeDirective = findTransposeDirective(song);
 	const displayedKey = computeDisplayedKey(toString(song.key), transposeDirective);
+	const transposeDelta = parseTransposeDelta(transposeDirective);
 
-	const songToRender = capoValue !== null ? song.transpose(-capoValue) : song;
+	removeTransposeTags(song);
+
+	const totalDelta = -(capoValue ?? 0) + transposeDelta;
+	const songToRender = totalDelta !== 0 ? song.transpose(totalDelta) : song;
 	const renderedHtml = formatter.format(songToRender);
 
 	const creditsHtml = buildCreditsHtml(songToRender);
