@@ -6,7 +6,8 @@ A Joplin plugin that renders ChordPro song markup directly in your notes with ch
 
 - **ChordPro Rendering**: Automatically renders ChordPro markup in code blocks tagged with ````chordpro````
 - **Chord Diagrams**: Displays chord names above lyrics with proper formatting
-- **Transposition Support**: Automatically detects and applies transpose directives (`{transpose: +2}`)
+- **Transposition Support**: Detects and applies transpose directives (`{transpose: +2}`) and capo settings, including negative transpose values
+- **Multi-Column Layout**: Supports `{columns: 2}` / `{col: 2}` directives for multi-column song layout
 - **Dark Theme Support**: Automatically adapts to Joplin's dark/light themes
 - **Mobile Support**: Works on the mobile version of Joplin
 - **Song Metadata**: Extracts and displays title, artist, capo information, and credits
@@ -41,6 +42,33 @@ The plugin automatically detects and applies transposition directives:
 
 [C]Original chord will be rendered as [D]
 ```
+
+Negative transposition and capo inversion are also supported:
+
+```chordpro
+{transpose: -3}
+{capo: 2}
+{title: Another Song}
+
+[C]Chord will be transposed by -5 semitones (capo inverted)
+```
+
+### Multi-Column Layout
+
+Render a song in multiple columns using the `{columns}` or `{col}` directive:
+
+```chordpro
+{columns: 2}
+{title: My Song}
+
+[Verse 1]
+Am   C         G
+Line one of the song
+F              C
+Line two of the song
+```
+
+Title, credits, and metadata span all columns automatically.
 
 ### Full Example
 
@@ -87,6 +115,7 @@ The built plugin will be available in the `publish/` directory.
 src/
 ├── index.ts                    # Plugin entry point
 ├── chordproRenderer.ts         # Markdown-it plugin for ChordPro
+├── chordproRenderer.css        # CSS styles (injected as content script)
 └── chordpro/
     ├── songProcessor.ts        # ChordPro parsing and processing
     ├── styles.ts              # CSS styles for rendering
