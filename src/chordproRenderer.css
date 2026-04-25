@@ -45,11 +45,13 @@
 .chordpro-rendered .chord-sheet .row {
 	display: flex;
 	flex-wrap: wrap;
+	min-width: 0;
 }
 
 .chordpro-rendered .chord-sheet .column {
 	display: flex;
 	flex-direction: column;
+	min-width: 0;
 }
 
 .chordpro-rendered .chord-sheet .chord {
@@ -62,7 +64,7 @@
 }
 
 .chordpro-rendered .chord-sheet .chord:not(:empty) {
-	padding-right: 10px;
+	margin-right: 10px;
 }
 
 .chordpro-rendered .chord-sheet .chord::after,
@@ -73,6 +75,8 @@
 .chordpro-rendered .chord-sheet .lyrics {
 	white-space: pre-wrap;
 	color: var(--joplin-text-color, #333333);
+	min-width: 0;
+	width: max-content;
 }
 
 .chordpro-rendered .chord-sheet .label {

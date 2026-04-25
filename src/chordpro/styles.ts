@@ -68,13 +68,12 @@ export function buildStyles(theme: any): string {
 	font-family: 'Courier New', Courier, monospace;
 	font-weight: 600;
 	color: ${accentColor};
-	min-width: 0.5em;
 	line-height: 1.2;
 	white-space: nowrap;
 }
 
 .chordpro-rendered .chord-sheet .chord:not(:empty) {
-	padding-right: 10px;
+	padding-right: 0px;
 }
 
 .chordpro-rendered .chord-sheet .chord::after,
