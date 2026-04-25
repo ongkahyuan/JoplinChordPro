@@ -2,7 +2,7 @@
 	"manifest_version": 1,
 	"id": "com.chordpro.renderer",
 	"app_min_version": "3.5",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"name": "ChordPro Renderer",
 	"description": "Renders ChordPro song markup with chord diagrams, transposition, capo support, multi-column layout, and dark theme",
 	"author": "Joel Ong",
