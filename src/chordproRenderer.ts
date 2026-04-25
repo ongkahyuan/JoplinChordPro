@@ -21,8 +21,10 @@ export default function(context: { contentScriptId: string; pluginId: string; po
 				const contentHtml = markdownIt.utils.escapeHtml(rawContent);
 
 				let renderedHtml = '';
+				let columnCount = 1;
 				try {
-					const { renderedHtml: rawRendered, creditsHtml, metaLineHtml } = processSong(rawContent);
+					const { renderedHtml: rawRendered, creditsHtml, metaLineHtml, columnCount: cc } = processSong(rawContent);
+					columnCount = cc;
 					renderedHtml = injectMetadata(rawRendered, creditsHtml, metaLineHtml);
 				} catch (e) {
 					renderedHtml = `<div class="chordpro-error">Failed to parse ChordPro: ${(e as Error).message}</div>`;
@@ -30,6 +32,13 @@ export default function(context: { contentScriptId: string; pluginId: string; po
 
 				const isDarkTheme = ruleOptions && ruleOptions.theme && ruleOptions.theme.appearance === 'dark';
 				const darkClass = isDarkTheme ? ' chordpro--dark-theme' : '';
+
+				if (columnCount > 1) {
+					renderedHtml = renderedHtml.replace(
+						'<div class="chord-sheet"',
+						`<div class="chord-sheet" style="column-count: ${columnCount}; column-gap: 1.5em;"`,
+					);
+				}
 
 				return `<div class="joplin-editable">
 					<pre class="joplin-source" hidden

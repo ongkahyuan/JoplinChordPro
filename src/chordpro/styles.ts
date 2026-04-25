@@ -109,6 +109,18 @@ export function buildStyles(theme: any): string {
 
 .chordpro-rendered .chord-sheet .empty-line {
 	min-height: 1.6em;
+	break-inside: avoid;
+}
+
+.chordpro-rendered .chord-sheet .row {
+	break-inside: avoid;
+}
+
+.chordpro-rendered .chord-sheet .title,
+.chordpro-rendered .chord-sheet .subtitle,
+.chordpro-rendered .chordpro-credits,
+.chordpro-rendered .chordpro-meta-line {
+	column-span: all;
 }
 
 .chordpro-rendered .chordpro-credits {

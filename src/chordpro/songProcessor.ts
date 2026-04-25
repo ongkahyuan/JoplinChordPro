@@ -76,6 +76,34 @@ function removeTransposeTags(song: Song): void {
 	}
 }
 
+function findColumnCountDirective(song: Song): number {
+	for (const line of song.lines) {
+		for (const item of line.items) {
+			if (
+				item instanceof Tag &&
+				((item as any).name === 'columns' || (item as any).name === 'col')
+			) {
+				const raw = (item as any).value || '';
+				const parsed = parseInt(raw.trim(), 10);
+				return isNaN(parsed) || parsed < 2 ? 1 : parsed;
+			}
+		}
+	}
+	return 1;
+}
+
+function removeColumnTags(song: Song): void {
+	for (const line of song.lines) {
+		line.items = line.items.filter(
+			(item) =>
+				!(
+					item instanceof Tag &&
+					((item as any).name === 'columns' || (item as any).name === 'col')
+				),
+		);
+	}
+}
+
 function parseTransposeDelta(transposeDirective: string | null): number {
 	if (transposeDirective === null) return 0;
 	const trimmed = transposeDirective.trim();
@@ -87,7 +115,7 @@ function parseTransposeDelta(transposeDirective: string | null): number {
 
 export function processSong(
 	rawContent: string,
-): { renderedHtml: string; creditsHtml: string; metaLineHtml: string } {
+): { renderedHtml: string; creditsHtml: string; metaLineHtml: string; columnCount: number } {
 	const song = parser.parse(rawContent);
 	const capoValue = extractCapo(song);
 
@@ -97,6 +125,9 @@ export function processSong(
 
 	removeTransposeTags(song);
 
+	const columnCount = findColumnCountDirective(song);
+	removeColumnTags(song);
+
 	const totalDelta = -(capoValue ?? 0) + transposeDelta;
 	const songToRender = totalDelta !== 0 ? song.transpose(totalDelta) : song;
 	const renderedHtml = formatter.format(songToRender);
@@ -104,5 +135,5 @@ export function processSong(
 	const creditsHtml = buildCreditsHtml(songToRender);
 	const metaLineHtml = buildMetaLineHtml(displayedKey, songToRender, capoValue);
 
-	return { renderedHtml, creditsHtml, metaLineHtml };
+	return { renderedHtml, creditsHtml, metaLineHtml, columnCount };
 }
